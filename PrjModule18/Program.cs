@@ -1,28 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace PrjModule18
 {
     internal static class Program
     {
-        static Semaphore sem = new Semaphore(Environment.ProcessorCount, Environment.ProcessorCount);
-
-        private static int FilesFound = 0;
+        //static Semaphore sem = new Semaphore(Environment.ProcessorCount, Environment.ProcessorCount);
+        private static MyThreadPool threadPool = new MyThreadPool(Environment.ProcessorCount);
         //Thread myThread;  
         private static void Main()
         {
-            CountDirs(@"C:\Users\Argiziont\downloads");
-            Console.WriteLine(FilesFound);
+            var stopwatch = Stopwatch.StartNew();
+            CountDirs(@"F:\Information\Payday2 mods\Backup");
+
+
+            while (MyThreadPool.Count <= Environment.ProcessorCount)
+            {
+                Thread.Sleep(100);
+            }
+            
+            stopwatch.Stop();
+            Console.WriteLine($"Total threads count: { Process.GetCurrentProcess().Threads.Count}");
+            Console.WriteLine($"Files found: { threadPool.FilesCounter}");
+            Console.WriteLine($"Total time: { stopwatch.ElapsedMilliseconds}");
         }
 
         //Counts total Files
         private static void CountFiles(string dir)
         {
             //Files in given directory
-            sem.WaitOne();
+            //sem.WaitOne();
             //Internal directories in current
             var totalInternalDirs = GetDirectories(dir);
 
@@ -35,16 +45,18 @@ namespace PrjModule18
 
             //Get Files in current directory
             var filesInCurrentDir = GetFiles(dir);
+
             if (filesInCurrentDir != null)
             {
                 foreach (var file in filesInCurrentDir)
                 {
-                    Console.WriteLine(Thread.CurrentThread.ManagedThreadId+"    "+file);
+                    Console.WriteLine(Thread.CurrentThread.ManagedThreadId + "    " + file);
+                    threadPool.FilesCounter++;
                 }
             }
             //If Files in current directory exist add them to total files list
-
-            sem.Release();
+            MyThreadPool.ReleaseThread();
+            //sem.Release();
         }
 
         //Counts total Directories with creation thread
@@ -56,8 +68,9 @@ namespace PrjModule18
             foreach (var subDir in totalInternalDirs)
             {
                 //Decide who will search in internal directories 
-                var dirThread = new Thread(() => CountFiles(subDir));
-                dirThread.Start();
+                MyThreadPool.SuppressThread(() => CountFiles(subDir));
+                //var dirThread = new Thread(() => CountFiles(subDir));
+                //dirThread.Start();
             }
         }
 
