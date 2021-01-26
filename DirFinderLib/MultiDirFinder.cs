@@ -7,6 +7,24 @@ namespace DirFinderLib
 {
     public static class MultiDirFinder
     {
+        //Counts total Directories with creation thread
+        public static void CountDirs(string path)
+        {
+            if (path == null) throw new ArgumentNullException(nameof(path));
+
+            if (!Directory.Exists(path))
+                throw new ArgumentException($"Dir {path} doesn't exist");
+
+            //There isn't no internal dirs in current
+            var totalInternalDirs = GetDirectories(path);
+            if (totalInternalDirs == null) return;
+            foreach (var subDir in totalInternalDirs)
+                //Decide who will search in internal directories 
+                MyThreadPool.SuppressThread(() => CountFiles(subDir));
+            //var dirThread = new Thread(() => CountFiles(subDir));
+            //dirThread.Start();
+        }
+
         //Counts total Files
         private static void CountFiles(string dir)
         {
@@ -31,19 +49,6 @@ namespace DirFinderLib
 
             //If Files in current directory exist add them to total files list
             MyThreadPool.ReleaseThread();
-        }
-
-        //Counts total Directories with creation thread
-        public static void CountDirs(string path)
-        {
-            //There isn't no internal dirs in current
-            var totalInternalDirs = GetDirectories(path);
-            if (totalInternalDirs == null) return;
-            foreach (var subDir in totalInternalDirs)
-                //Decide who will search in internal directories 
-                MyThreadPool.SuppressThread(() => CountFiles(subDir));
-            //var dirThread = new Thread(() => CountFiles(subDir));
-            //dirThread.Start();
         }
 
         //Misc methods

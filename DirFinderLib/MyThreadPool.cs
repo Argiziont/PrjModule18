@@ -6,11 +6,12 @@ namespace DirFinderLib
     public class MyThreadPool
     {
         private static readonly object Locker = new();
+        private static readonly int TotalThreads;
         private static int _files;
 
-        public MyThreadPool(int count)
+        static MyThreadPool()
         {
-            Count = count;
+            TotalThreads = Count = Environment.ProcessorCount;
         }
 
         public static int Count { get; private set; }
@@ -31,13 +32,15 @@ namespace DirFinderLib
         {
             lock (Locker)
             {
-                Count++;
+                if (Count < TotalThreads) Count++;
                 Console.WriteLine("     Thread is released");
             }
         }
 
         public static void SuppressThread(ThreadStart func)
         {
+            if (func == null) throw new ArgumentNullException(nameof(func));
+
             if (Count > 0)
             {
                 lock (Locker)

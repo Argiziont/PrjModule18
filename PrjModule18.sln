@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrjModule18", "PrjModule18\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirFinderLib", "DirFinderLib\DirFinderLib.csproj", "{2AC13E87-E395-450C-BF51-0BD2A1235CB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirFinderLib.Tests", "DirFinderLib.Tests\DirFinderLib.Tests.csproj", "{634CD9F4-322F-4EA7-9269-45548929C246}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2AC13E87-E395-450C-BF51-0BD2A1235CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AC13E87-E395-450C-BF51-0BD2A1235CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AC13E87-E395-450C-BF51-0BD2A1235CB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{634CD9F4-322F-4EA7-9269-45548929C246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{634CD9F4-322F-4EA7-9269-45548929C246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{634CD9F4-322F-4EA7-9269-45548929C246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{634CD9F4-322F-4EA7-9269-45548929C246}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
