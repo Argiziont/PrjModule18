@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DirFinderLib
 {
@@ -19,9 +20,7 @@ namespace DirFinderLib
             var totalInternalDirs = GetDirectories(path);
             if (totalInternalDirs == null) return;
             foreach (var subDir in totalInternalDirs)
-                //Decide who will search in internal directories 
-                MyThreadPool.SuppressThread(() => CountFiles(subDir));
-            //var dirThread = new Thread(() => CountFiles(subDir));
+                Task.Factory.StartNew(() => CountFiles(subDir));
             //dirThread.Start();
         }
 
@@ -40,15 +39,13 @@ namespace DirFinderLib
             //Get Files in current directory
             var filesInCurrentDir = GetFiles(dir);
 
-            if (filesInCurrentDir != null)
-                foreach (var file in filesInCurrentDir)
-                {
-                    Console.WriteLine(Thread.CurrentThread.ManagedThreadId + "    " + file);
-                    MyThreadPool.FilesCounter++;
-                }
+            if (filesInCurrentDir == null) return;
+            foreach (var file in filesInCurrentDir)
+            {
+                Task.Factory.StartNew(() => Console.WriteLine(Thread.CurrentThread.ManagedThreadId + "    " + file));
+            }
 
             //If Files in current directory exist add them to total files list
-            MyThreadPool.ReleaseThread();
         }
 
         //Misc methods
