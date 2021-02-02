@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using DirFinderLib;
 
 namespace PrjModule18
@@ -12,9 +11,11 @@ namespace PrjModule18
         {
             var stopwatch = Stopwatch.StartNew();
             MultiDirFinder.CountDirs(@"C:\Users\Argiziont\Downloads\Westworld");
-            Thread.Sleep(1000);
-            stopwatch.Stop();
 
+            stopwatch.Stop();
+            Console.WriteLine($"Treads number: {Process.GetCurrentProcess().Threads.Count}");
+            Console.WriteLine($"Tread time work {stopwatch.ElapsedMilliseconds}");
+            Console.WriteLine($"Files number {MultiDirFinder.DirsNumber}");
         }
     }
 }

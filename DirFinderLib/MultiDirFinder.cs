@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace DirFinderLib
 {
     public static class MultiDirFinder
     {
+        public static int DirsNumber;
         //Counts total Directories with creation thread
         public static void CountDirs(string path)
         {
@@ -19,8 +21,8 @@ namespace DirFinderLib
             //There isn't no internal dirs in current
             var totalInternalDirs = GetDirectories(path);
             if (totalInternalDirs == null) return;
-            foreach (var subDir in totalInternalDirs)
-                Task.Factory.StartNew(() => CountFiles(subDir));
+            var tasks= totalInternalDirs.Select(subDir => Task.Factory.StartNew(() => CountFiles(subDir))).ToList();
+            Task.WaitAll(tasks.ToArray());
             //dirThread.Start();
         }
 
@@ -38,13 +40,14 @@ namespace DirFinderLib
 
             //Get Files in current directory
             var filesInCurrentDir = GetFiles(dir);
-
             if (filesInCurrentDir == null) return;
-            foreach (var file in filesInCurrentDir)
-            {
-                Task.Factory.StartNew(() => Console.WriteLine(Thread.CurrentThread.ManagedThreadId + "    " + file));
-            }
 
+            var tasks = filesInCurrentDir.Select(file => Task.Factory.StartNew(() =>
+            {
+                Console.WriteLine(Thread.CurrentThread.ManagedThreadId + "    " + file);
+                DirsNumber++;
+            })).ToList();
+            Task.WaitAll(tasks.ToArray());
             //If Files in current directory exist add them to total files list
         }
 
