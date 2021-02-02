@@ -11,7 +11,6 @@ namespace DirFinderLib.Tests
         public void CountDirs_Passes_InputIsCorrect()
         {
             // Arrange
-            MyThreadPool ThreadPool;
 
             // Assert&&Act
             MultiDirFinder.CountDirs(@"C:\Users\Argiziont\Downloads\Westworld");
